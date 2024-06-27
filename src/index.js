@@ -1,29 +1,22 @@
 #! /usr/bin/env node
 
-import { mainFn } from './utils.js';
-import { mainFunction } from './lib/index.js';
+import { mainFunction } from './cli/lib/index.js';
 
-import next from 'next';
 import http from 'http';
+import next from 'next';
 import open from 'open';
 import path from 'path';
-import kill from 'kill-port';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import dotenv from 'dotenv';
-import crypto from 'crypto';
-import WebSocket, { WebSocketServer } from 'ws';
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
-import readline from 'readline';
 import chalk from 'chalk';
+import dotenv from 'dotenv';
 import fs from 'fs';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 dotenv.config();
 
 
-
-const clientDir = path.join(dirname(fileURLToPath(import.meta.url)), '../client');
+const clientDir = path.join(dirname(fileURLToPath(import.meta.url)), '../');
+console.log('process.argv:', clientDir)
 // const app = next({ dev: false, dir: clientDir });
 // const handle = app.getRequestHandler();
 const DEFAULT_TIME_RANGE_YEARS = 10;
@@ -36,9 +29,10 @@ const port = 3000
 const defaultConfig = {
   "timeRange": 4,
   "_comment1": "Time Range is the time period for analysis. e.g the default is 4 which means the analysis is for the last 4 years",
-  
   "ownershipPercentage": 0.5,
-  "_comment2": "a threshold for file ownership percentage, determining when a developer is considered a bus factor "
+  "_comment2": "a threshold for file ownership percentage, determining when a developer is considered a bus factor ",
+  "ownershipPercentage_future_bf": 0.2,
+  "_comment3": "a threshold for file ownership percentage, determining when a developer is considered a future bus factor "
 };
 
 
@@ -48,9 +42,8 @@ async function startServer() {
     // Wait for mainFunction to complete
     // await kill(port);
 
-    console.log(chalk.blue.bold('\nTF 1.0 - CLI'));
+    console.log(chalk.blue.bold('\nDev-Eye v0.0.1 - CLI'));
 
-    
     
     // Check if the file exists
     if (!fs.existsSync('dev-eye.json')) {
@@ -63,23 +56,12 @@ async function startServer() {
     const config = JSON.parse(fs.readFileSync('dev-eye.json', 'utf-8'));
     console.log(chalk.green('1. Configuration options loaded successfully from dev-eye.json'));
     console.log(chalk.green(`   - Time Range for analysis: ${config.timeRange} years`));
-    console.log(chalk.green(`   - Ownership Percentage: ${config.ownershipPercentage} \n`));
+    console.log(chalk.green(`   - Ownership Percentage for Bus Factors: ${config.ownershipPercentage} \n`));
+    console.log(chalk.green(`   - Ownership Percentage for Future Bus Factors: ${config.ownershipPercentage_future_bf} \n`));
 
-    // console.log('config:',config)
-
-    // const start = process.hrtime();
 
     const { log_file, tf_file, nor_Authors_file, topAuthors_file, meta_data_file } = await mainFunction(config);
     console.log(chalk.blue('7. Generating Dev-Eye Report...'));
-
-
-
-    // const diff = process.hrtime(start);
-    // const NS_PER_SEC = 1e9;
-    // const timeInSeconds = (diff[0] * NS_PER_SEC + diff[1]) / NS_PER_SEC;
-    // const timeInMinutes = timeInSeconds / 60;
-
-    // console.log(`---> ${timeInSeconds} seconds and ${timeInMinutes} min`);
 
     const app = next({ dev: false, hostname, port, dir: clientDir })
     const handle = app.getRequestHandler()
@@ -119,19 +101,3 @@ async function startServer() {
 
 // Call startServer to start the server
 startServer()
-
-
-
-/*
---- years to look back:
---- grouping criteria: (default - 6 months)
---- OWNERSHIP_THRESHOLD = 0.5;
---- FUTURE_OWNERSHIP_THRESHOLD = 0.2
---- FILES_TO_IGNORE
-
-----------
-compare various repos of various types (ML..., ETC)
-*/
-// timeline
-// files 
-// configuration

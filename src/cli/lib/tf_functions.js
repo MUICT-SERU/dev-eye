@@ -202,7 +202,7 @@ export function getTopAuthors(fileDOA) {
 }
 
 // Truck Factor Algorithm using normalized DOA
-export function calculateTruckFactorUsingNormalizedDOA(normalizedAuthors, totalFiles, sortedTopAuthors, coverageThreshold = 0.5) {
+export function calculateTruckFactorUsingNormalizedDOA(normalizedAuthors, totalFiles, sortedTopAuthors, coverageThreshold = 0.5, coverageThreshold_future_bf = 0.2) {
     let authorsFiles = normalizedAuthors;
     const systemFiles = totalFiles.size;
     let topAuthors = sortedTopAuthors.slice(); // Use a copy of the sortedTopAuthors array
@@ -217,7 +217,7 @@ export function calculateTruckFactorUsingNormalizedDOA(normalizedAuthors, totalF
 
             if (coverage >= coverageThreshold) {
                 truckFactor.push(topAuthor);
-            } else if (coverageThreshold>0.2 && coverage >= (coverageThreshold-0.2) && coverage < coverageThreshold) {
+            } else if (coverageThreshold>coverageThreshold_future_bf && coverage >= (coverageThreshold-coverageThreshold_future_bf) && coverage < coverageThreshold) {
                 // we will add future tf is the threshold is more than 0.2 else we will not add future tf
                 future_tf.push(topAuthor);
             } else {

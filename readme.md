@@ -43,6 +43,7 @@ To customize DEV-EYE's behavior, you can include a *dev-eye.json* file in your p
   "timeRange": 4,
   "_comment1": "",
   "ownershipPercentage": 0.5,
+  "ownershipPercentage_future_bf": 0.2,
 }
 ```
 

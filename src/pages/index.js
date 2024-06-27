@@ -1,9 +1,9 @@
-import BarChartComponent from "./components/barChart";
-import BarChartFutureCurrent  from "./components/barChart-tf-ft";
-import ContributorFunnel  from "./components/contributors";
-import RepoDetails from "./components/repoDetails";
-import Settings from "./components/settings";
-import TopAuthors  from "./components/topAurthors";
+import BarChartComponent from "../components/barChart";
+import BarChartFutureCurrent  from "../components/barChart-tf-ft";
+import ContributorFunnel  from "../components/contributors";
+import RepoDetails from "../components/repoDetails";
+import Settings from "../components/settings";
+import TopAuthors  from "../components/topAurthors";
 import { useEffect, useState } from 'react';
 
 const mainPage = () => {

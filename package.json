@@ -1,18 +1,46 @@
 {
-  "name": "dev-eye-demo",
-  "version": "1.0.0",
+  "name": "dev-eye",
+  "version": "1.0.5",
   "description": "a command-line  and a web-based visualization tool that computes and visualizes the bus factor of a repository",
   "author": "khazifire",
   "license": "ISC",
-  "main": "./bin/index.js",
-  "bin":  "./bin/index.js",
+  "main": "./src/index.js",
+  "bin":   "./src/index.js",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "public/",
+    ".next",
+    "src/cli/lib/",
+    "CHANGELOG.md"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build && npm run build-cli",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-cli": "tsup  ./src/index.js"
   },
   "type": "module",
   "keywords": [],
   "devDependencies": {
-    "boxen": "^4.2.0",
+  
+   "tsup": "^7.2.0",
+ 
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "@tremor/react": "^3.16.2",
+    "chart.js": "^4.4.1",
+    "os": "^0.1.2",
+    "react": "^18",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18"
+  },
+  "dependencies": {
+   "boxen": "^4.2.0",
     "chalk": "^4.1.2",
     "child_process": "^1.0.2",
     "crypto": "^1.0.1",

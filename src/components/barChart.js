@@ -83,7 +83,7 @@ export default function BarChartComponent({tf}) {
   const chartData=[
     {
       name: '2024',
-      '2024':  tf?.truckFactor.length,
+      '2024':  5,
     },
   ]
   return (
@@ -95,6 +95,7 @@ export default function BarChartComponent({tf}) {
         <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
           The chart bellow shows the evolution of bus factor over the past 2 years
         </p>
+        is this showing
         <BarChart
           data={chartData}
           index="date"
@@ -106,7 +107,7 @@ export default function BarChartComponent({tf}) {
           colors={showComparison ? ['cyan', 'blue'] : ['blue']}
           valueFormatter={valueFormatter}
           yAxisWidth={45}
-          className="hidden mt-6 h-60 sm:block"
+          className="mt-6 --hidden h-60 sm:block"
         />
         <BarChart
           data={chartData}
@@ -119,7 +120,7 @@ export default function BarChartComponent({tf}) {
           colors={showComparison ? ['cyan', 'blue'] : ['blue']}
           valueFormatter={valueFormatter}
           showYAxis={false}
-          className="h-56 mt-4 sm:hidden"
+          className="h-56 mt-4 sm:h---idden"
         />
         <Divider />
         <div className="flex items-center mb-2 space-x-3">
