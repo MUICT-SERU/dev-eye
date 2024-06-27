@@ -45,7 +45,86 @@ function processFileNames(file) {
     }
 }
 
+// export const groupCommitsByYear = (log_file) => {
+//     const gitLogData = fs.readFileSync(log_file, 'utf-8');
+//     const lines = gitLogData.split('\n');
+//     const commitsByYear = {};
 
+//     lines.forEach((line) => {
+//         // Assuming the date is at the start of each log entry and formatted as YYYY-MM-DD
+//         const year = line.substring(0, 4);
+//         if (!commitsByYear[year]) {
+//             commitsByYear[year] = [];
+//         }
+//         commitsByYear[year].push(line);
+//     });
+
+//     return commitsByYear;
+// };
+
+
+//TODO: add the function to group commits by year
+function parseAndDynamicallyGroupCommits(logData) {
+    const commits = logData.trim().split('\n\n');
+    const commitsByYear = {};
+    let minYear = Infinity;
+    let maxYear = -Infinity;
+  
+    // Parse and group by year, also find min and max years
+    commits.forEach(commit => {
+      const lines = commit.split('\n');
+      const [authorInfo, ...fileLines] = lines;
+      const [author, dateString] = authorInfo.split(' | ');
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+  
+      minYear = Math.min(minYear, year);
+      maxYear = Math.max(maxYear, year);
+  
+      const files = fileLines.map(fileLine => {
+        const [additions, deletions, fileName] = fileLine.split('\t');
+        return {
+          fileName,
+          additions: parseInt(additions, 10),
+          deletions: parseInt(deletions, 10)
+        };
+      });
+  
+      const commitObject = {
+        author,
+        date: dateString,
+        files
+      };
+  
+      if (!commitsByYear[year]) {
+        commitsByYear[year] = [];
+      }
+      commitsByYear[year].push(commitObject);
+    });
+  
+    // Dynamically generate specific year ranges
+    console.log(minYear, maxYear)
+    const specificRanges = {};
+  for (let startYear = minYear; startYear < maxYear; startYear++) {
+    const endYear = startYear + 1;
+    const rangeKey = `${minYear}-${endYear}`;
+    specificRanges[rangeKey] = [];
+  }
+  
+    // Group commits into dynamically generated year ranges
+    Object.keys(specificRanges).forEach(range => {
+      const [startYear, endYear] = range.split('-').map(Number);
+      for (let year = startYear; year <= endYear; year++) {
+        if (commitsByYear[year]) {
+          specificRanges[range].push(...commitsByYear[year]);
+        }
+      }
+    });
+  
+    return specificRanges;
+  }
+
+//TODO: will need to update the input of this file
 export function parseGitLog(log_file) {
     const gitLogData = fs.readFileSync(log_file, 'utf-8');
     const lines = gitLogData.split('\n');
