@@ -1,60 +1,58 @@
-import { useEffect, useState } from 'react';
-import { Card, List, ListItem, Title } from '@tremor/react';
+import { useEffect, useState } from "react";
+import { Card, List, ListItem, Title } from "@tremor/react";
 
-export default function RepoDetails({authors={}, metaData}) {
-  const [isOpen, setIsOpen] = useState(true);
-  const contributors = Object.keys(authors)?.length
+export default function RepoDetails({ authors = {}, metaData, year }) {
+  const contributors = Object.keys(authors?.[year] || [])?.length;
+
+  console.log(metaData?.created_date);
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return d.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  console.log(formatDate(metaData?.created_date));
 
   const cities = [
     {
-      label: 'Repository Name',
-      rating: metaData?.repoName || '--'
+      label: "Repository Name",
+      rating: metaData?.repoName || "--",
     },
     {
-      label: 'Analysis Start Date',
-      rating: metaData?.created_date || '--'
+      label: "Analysis Start - End Date",
+      rating: `${formatDate(metaData?.created_date)} - ${formatDate(metaData?.updated_date)}` || "--",
+    },
+    // {
+    //   label: 'Analysis End Date',
+    //   rating: formatDate(metaData?.updated_date) || '--'
+    // },
+    {
+      label: "Number of Commits",
+      rating: metaData?.numberOfCommits || "--",
     },
     {
-      label: 'Analysis End Date',
-      rating: metaData?.updated_date || '--'
-    },
-    {
-      label: 'Number of Commits',
-      rating: metaData?.numberOfCommits || '--'
-    },
-    {
-      label: 'Number of Contributors',
+      label: "Number of Contributors",
       rating: contributors,
     },
-]
-
+  ];
 
   return (
-      <Card className='row-span-2'>
+    <div className="col-span-2 border p-4">
+      <p className="text-4xl font-semibold text-blue-500 ">DEV-EYE: Analytic Report</p>
 
-
-        <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">DEV-EYE: </p>
-      <p className="text-3xl font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">Analytic Report</p>
-        <div className='mt-4'>
- 
-
-
-
-        <h3 className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Repository Details</h3>
-            <List className="">
-                {cities?.map((item) => (
-                <ListItem key={item.label}>
-                    <span>{item.label}</span>
-                    <span>{item.rating}</span>
-                </ListItem>
-                ))}
-            </List>
-
-            
-        </div>
-      
-        
-      </Card>
-  )
-  
+      <h3 className="mt-4 font-medium text-tremor-content-strong">Repository Details</h3>
+      <List className="">
+        {cities?.map((item) => (
+          <ListItem key={item.label}>
+            <span>{item.label}</span>
+            <span>{item.rating}</span>
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 }

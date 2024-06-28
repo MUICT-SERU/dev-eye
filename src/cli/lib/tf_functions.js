@@ -45,42 +45,71 @@ function processFileNames(file) {
     }
 }
 
-// export const groupCommitsByYear = (log_file) => {
-//     const gitLogData = fs.readFileSync(log_file, 'utf-8');
-//     const lines = gitLogData.split('\n');
-//     const commitsByYear = {};
 
-//     lines.forEach((line) => {
-//         // Assuming the date is at the start of each log entry and formatted as YYYY-MM-DD
-//         const year = line.substring(0, 4);
-//         if (!commitsByYear[year]) {
-//             commitsByYear[year] = [];
-//         }
-//         commitsByYear[year].push(line);
-//     });
-
-//     return commitsByYear;
-// };
+function generateGroupedData(logData) {
+    const groupedResults = {};
+    
+    Object.keys(logData).forEach(group => {
+        const authorFileChanges = {};
+        const fileFirstAuthor = {};
+    
+        logData[group].forEach(commit => {
+        const author = commit.author;
+        const commitDate = new Date(commit.date);
+    
+        commit.files.forEach(file => {
+            const { fileName, additions, deletions } = file;
+    
+            // Update Author File Changes
+            if (!authorFileChanges[author]) authorFileChanges[author] = {};
+            if (!authorFileChanges[author][fileName]) authorFileChanges[author][fileName] = { insertions: 0, deletions: 0, commits: 0 };
+    
+            authorFileChanges[author][fileName].insertions += additions;
+            authorFileChanges[author][fileName].deletions += deletions;
+            authorFileChanges[author][fileName].commits += 1;
+    
+            // Update File First Author
+            if (!fileFirstAuthor[fileName] || fileFirstAuthor[fileName].date > commitDate) {
+            fileFirstAuthor[fileName] = { author: author, date: commitDate };
+            }
+        });
+        });
+    
+        // Store results for the current group
+        groupedResults[group] = { authorFileChanges, fileFirstAuthor };
+    });
+    
+    return groupedResults;
+    }
 
 
 //TODO: add the function to group commits by year
-function parseAndDynamicallyGroupCommits(logData) {
-    const commits = logData.trim().split('\n\n');
+export function parseGitLog(log_file) {
+    const gitLogData = fs.readFileSync(log_file, 'utf-8');
+    // const commits = gitLogData.split('\n');
+    const commits = gitLogData.trim().split('\n\n');
     const commitsByYear = {};
     let minYear = Infinity;
     let maxYear = -Infinity;
+    let numberOfCommits =0
+    let emailToNameMap = {}
   
     // Parse and group by year, also find min and max years
-    commits.forEach(commit => {
+    commits?.forEach(commit => {
       const lines = commit.split('\n');
       const [authorInfo, ...fileLines] = lines;
-      const [author, dateString] = authorInfo.split(' | ');
+      const [author, dateString, email] = authorInfo.split(' | ');
       const date = new Date(dateString);
       const year = date.getFullYear();
+      numberOfCommits +=1
   
       minYear = Math.min(minYear, year);
       maxYear = Math.max(maxYear, year);
-  
+
+    if (!emailToNameMap[email]) {
+        emailToNameMap[email] = author;
+    }
+
       const files = fileLines.map(fileLine => {
         const [additions, deletions, fileName] = fileLine.split('\t');
         return {
@@ -91,7 +120,7 @@ function parseAndDynamicallyGroupCommits(logData) {
       });
   
       const commitObject = {
-        author,
+        author:emailToNameMap[email],
         date: dateString,
         files
       };
@@ -101,16 +130,22 @@ function parseAndDynamicallyGroupCommits(logData) {
       }
       commitsByYear[year].push(commitObject);
     });
+
+
   
     // Dynamically generate specific year ranges
-    console.log(minYear, maxYear)
+    // console.log(minYear, maxYear)
     const specificRanges = {};
-  for (let startYear = minYear; startYear < maxYear; startYear++) {
-    const endYear = startYear + 1;
-    const rangeKey = `${minYear}-${endYear}`;
-    specificRanges[rangeKey] = [];
-  }
-  
+if(minYear === maxYear){
+    specificRanges[`${minYear}-${maxYear}`] = [];
+}else{
+    for (let startYear = minYear; startYear < maxYear; startYear++) {
+        const endYear = startYear + 1;
+        const rangeKey = `${minYear}-${endYear}`;
+        specificRanges[rangeKey] = [];
+      }
+}
+
     // Group commits into dynamically generated year ranges
     Object.keys(specificRanges).forEach(range => {
       const [startYear, endYear] = range.split('-').map(Number);
@@ -121,11 +156,11 @@ function parseAndDynamicallyGroupCommits(logData) {
       }
     });
   
-    return specificRanges;
+    return {groupedData: generateGroupedData(specificRanges), numberOfCommits};
   }
 
-//TODO: will need to update the input of this file
-export function parseGitLog(log_file) {
+
+export function parseGitLog_old(log_file) {
     const gitLogData = fs.readFileSync(log_file, 'utf-8');
     const lines = gitLogData.split('\n');
     const authorFileChanges = {};
@@ -189,16 +224,7 @@ export function parseGitLog(log_file) {
 // Function to compute DOA for each file
 export function computeDOA(authorFileChanges, fileFirstAuthor) {
     const fileDOA = {};
-    
-    // console.log(authorFileChanges)
-
-    //-- DOA
-    // first author
-    // changes
-    // changes by others
-
-
-    // console.log(authorFileChanges)
+  
     Object.keys(authorFileChanges).forEach(author => {
         Object.keys(authorFileChanges[author]).forEach(file => {
             const { commits } = authorFileChanges[author][file];
