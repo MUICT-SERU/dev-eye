@@ -78,6 +78,7 @@ function valueFormatter(number) {
 }
 
 export default function BarChartComponent({ tf, years }) {
+  const [value, setValue] = useState(null);
   const [showComparison, setShowComparison] = useState(false);
 
   console.log(tf?.[years[years.length - 1]]?.truckFactor.length);
@@ -88,6 +89,7 @@ export default function BarChartComponent({ tf, years }) {
       return {
         date: year,
         [year]: tf?.[year]?.truckFactor.length,
+        tf_list: tf?.[year]?.truckFactor,
         [`${year} future`]: tf?.[year]?.future_tf.length,
       };
     });
@@ -96,19 +98,39 @@ export default function BarChartComponent({ tf, years }) {
     <>
       <div className="border p-4">
         <h3 className="text-lg font-medium text-tremor-content-strong ">Bus Factor</h3>
-        <p className="text-tremor-default text-tremor-content ">The chart below shows the evolution of the bus factor over the past {chartData?.length} years</p>
-        <BarChart
-          data={chartData}
-          index="date"
-          minValue={0}
-          allowDecimals={false}
-          categories={years}
-          colors={["cyan", "blue"]}
-          valueFormatter={valueFormatter}
-          yAxisWidth={45}
-          // className="mt-6 --hidden h-60 sm:block"
-        />
+        <p className="text-tremor-default text-tremor-content ">Evolution of the bus factor over the past {chartData?.length} years</p>
+        <div className="flex flex-row items-center">
+          <BarChart
+            data={chartData}
+            index="date"
+            minValue={0}
+            allowDecimals={false}
+            categories={years}
+            colors={["blue"]}
+            valueFormatter={valueFormatter}
+            yAxisWidth={45}
+            stack={true}
+            onValueChange={(v) => setValue(v)}
+            // className="mt-6 --hidden h-60 sm:block"
+          />
+          {value && <CodeBlock source={value} chartData={chartData} variant="empty" className="mt-8" />}
+        </div>
       </div>
     </>
   );
 }
+
+const CodeBlock = ({ source }) => {
+  return (
+    <div className="flex min-w-[7rem] flex-col gap-2">
+      <div className="text-xs">
+        <p className="font-semibold text-blue-500">Current TF: </p>
+        {source?.tf_list?.map((item, index) => (
+          <span key={"item" + item}>
+            {index + 1}. {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};

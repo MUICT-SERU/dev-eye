@@ -46,11 +46,10 @@ async function startServer() {
     console.log(chalk.green("1. Configuration options loaded successfully from dev-eye.json"));
     console.log(chalk.green(`   - Time Range for analysis: ${config.timeRange} years`));
     console.log(chalk.green(`   - Ownership Percentage for Bus Factors: ${config.ownershipPercentage * 100}%`));
-    console.log(chalk.green(`   - Ownership Percentage for Future Bus Factors: ${config.ownershipPercentage_future_bf * 100}% \n`));
+    console.log(chalk.green(`   - Ownership Percentage for Future Bus Factors: ${(config.ownershipPercentage_future_bf || 0.2) * 100}% \n`));
 
     const { log_file, tf_file, nor_Authors_file, topAuthors_file, meta_data_file } = await mainFunction(config);
     // console.log(chalk.blue("7. Generating Dev-Eye Report..."));
-
 
     const app = next({ dev: false, hostname, port, dir: clientDir });
     const handle = app.getRequestHandler();
@@ -93,33 +92,33 @@ async function startServer() {
       startServer(port); // Start the server with the initial port
     });
 
-    app.prepare().then(() => {
-      http
-        .createServer(async (req, res) => {
-          try {
-            res.setHeader("Set-Cookie", [
-              `tf_file=${tf_file}; Path=/`,
-              `nor_Authors_file=${nor_Authors_file}; Path=/`,
-              `topAuthors_file=${topAuthors_file}; Path=/`,
-              `meta_data_file=${meta_data_file}; Path=/`,
-            ]);
+    // app.prepare().then(() => {
+    //   http
+    //     .createServer(async (req, res) => {
+    //       try {
+    //         res.setHeader("Set-Cookie", [
+    //           `tf_file=${tf_file}; Path=/`,
+    //           `nor_Authors_file=${nor_Authors_file}; Path=/`,
+    //           `topAuthors_file=${topAuthors_file}; Path=/`,
+    //           `meta_data_file=${meta_data_file}; Path=/`,
+    //         ]);
 
-            await handle(req, res);
-          } catch (err) {
-            console.error("Error occurred handling", req.url, err);
-            res.statusCode = 500;
-            res.end("internal server error");
-          }
-        })
-        .once("error", (err) => {
-          console.error(err);
-          process.exit(1);
-        })
-        .listen(port, () => {
-          console.log(chalk.yellow(`8. Visualization Ready on http://${hostname}:${port}`));
-          open(`http://localhost:${port}`);
-        });
-    });
+    //         await handle(req, res);
+    //       } catch (err) {
+    //         console.error("Error occurred handling", req.url, err);
+    //         res.statusCode = 500;
+    //         res.end("internal server error");
+    //       }
+    //     })
+    //     .once("error", (err) => {
+    //       console.error(err);
+    //       process.exit(1);
+    //     })
+    //     .listen(port, () => {
+    //       console.log(chalk.yellow(`8. Visualization Ready on http://${hostname}:${port}`));
+    //       open(`http://localhost:${port}`);
+    //     });
+    // });
   } catch (error) {
     console.error("Failed to start server:", error);
   }

@@ -312,7 +312,7 @@ export function calculateTruckFactorUsingNormalizedDOA(normalizedAuthors, totalF
 
       if (coverage >= coverageThreshold) {
         truckFactor.push(topAuthor);
-      } else if (coverageThreshold > coverageThreshold_future_bf && coverage >= coverageThreshold - coverageThreshold_future_bf && coverage < coverageThreshold) {
+      } else if (coverageThreshold > coverageThreshold_future_bf && coverage >= coverageThreshold_future_bf && coverage < coverageThreshold) {
         // we will add future tf is the threshold is more than 0.2 else we will not add future tf
         future_tf.push(topAuthor);
       } else {
