@@ -1,11 +1,11 @@
 {
   "name": "dev-eye",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "a command-line  and a web-based visualization tool that computes and visualizes the bus factor of a repository",
   "author": "khazifire",
   "license": "ISC",
   "main": "./src/index.js",
-  "bin":   "./src/index.js",
+  "bin": "./src/index.js",
   "files": [
     "LICENSE",
     "README.md",
@@ -17,18 +17,19 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npm run build-cli",
+    "build": "npm run format && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-cli": "tsup  ./src/index.js"
+    "build-cli": "tsup  ./src/index.js",
+    "format": "prettier --write ./src"
   },
   "type": "module",
   "keywords": [],
   "devDependencies": {
-  
-   "tsup": "^7.2.0",
- 
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "tsup": "^7.2.0",
+    "prettier": "^3.2.5",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
@@ -40,7 +41,7 @@
     "react-dom": "^18"
   },
   "dependencies": {
-   "boxen": "^4.2.0",
+    "boxen": "^4.2.0",
     "chalk": "^4.1.2",
     "child_process": "^1.0.2",
     "crypto": "^1.0.1",

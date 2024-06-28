@@ -1,6 +1,0 @@
-{
-  "timeRange": 4,
-  "_comment1": "Time Range is the time period for analysis. e.g the default is 4 which means the analysis is for the last 4 years",
-  "ownershipPercentage": 0.5,
-  "_comment2": "a threshold for file ownership percentage, determining when a developer is considered a bus factor "
-}
