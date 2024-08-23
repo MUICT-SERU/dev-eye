@@ -80,7 +80,7 @@ const getGitMeta = (repoPath, type) => {
   });
 };
 
-const get_metadata = async (repoPath, numberOfCommits, startDate) => {
+const get_metadata = async (repoPath, numberOfCommits, numberOfFiles, startDate) => {
   // const created_data = getGitMeta(repoPath, 'created_date');
   const updated_data = await getGitMeta(repoPath, "updated_date");
   const repoName = await getGitMeta(repoPath, "repo_name");
@@ -91,6 +91,7 @@ const get_metadata = async (repoPath, numberOfCommits, startDate) => {
     updated_date: res[0],
     repoName: res[1],
     numberOfCommits,
+    numberOfFiles,
   };
 };
 
@@ -165,8 +166,8 @@ const mainFunction = async (config) => {
 
       console.log(chalk.green("3. Parsing commit details from log file"));
       // const { authorFileChanges, fileFirstAuthor, numberOfCommits } = parseGitLog(log_file)
-      const { groupedData, numberOfCommits } = parseGitLog(log_file);
-      const meta = await get_metadata(repoPath, numberOfCommits, startDate);
+      const { groupedData, numberOfCommits, numberOfFiles } = parseGitLog(log_file);
+      const meta = await get_metadata(repoPath, numberOfCommits, numberOfFiles, startDate);
 
       let _normalizedAuthors_grouped = {};
       let _sortedTopAuthors_grouped = {};

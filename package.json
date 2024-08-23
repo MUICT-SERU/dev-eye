@@ -1,6 +1,6 @@
 {
   "name": "dev-eye",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "a command-line  and a web-based visualization tool that computes and visualizes the bus factor of a repository",
   "author": "khazifire",
   "license": "ISC",
@@ -22,7 +22,8 @@
     "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-cli": "tsup  ./src/index.js",
-    "format": "prettier --write ./src"
+    "format": "prettier --write ./src",
+    "release": "npm run build && npm version patch && npm publish"
   },
   "type": "module",
   "keywords": [],

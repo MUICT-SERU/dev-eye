@@ -31,11 +31,15 @@ export default function RepoDetails({ authors = {}, metaData, year }) {
     //   rating: formatDate(metaData?.updated_date) || '--'
     // },
     {
-      label: "Number of Commits",
+      label: "Number of analyzed Commits",
       rating: metaData?.numberOfCommits || "--",
     },
     {
-      label: "Number of Contributors",
+      label: "Number of analyzed Files",
+      rating: metaData?.numberOfFiles || "--",
+    },
+    {
+      label: "Number of analyzed Contributors",
       rating: contributors,
     },
   ];

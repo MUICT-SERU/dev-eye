@@ -160,6 +160,8 @@ export function parseGitLog_old(log_file) {
   let currentDate = null;
   let fileRenames = {};
 
+  const Files_Set = new Set();
+
   let numberOfCommits = 0;
 
   lines.forEach((line) => {
@@ -190,6 +192,7 @@ export function parseGitLog_old(log_file) {
       }
 
       const filePath = fileRenames[oldFileName] || oldFileName;
+      Files_Set.add(filePath);
 
       if (!isNaN(parseInt(insertions)) || !isNaN(parseInt(deletions))) {
         if (!authorFileChanges[currentAuthor][filePath]) {
@@ -207,7 +210,7 @@ export function parseGitLog_old(log_file) {
     }
   });
 
-  return { authorFileChanges, fileFirstAuthor, numberOfCommits };
+  return { authorFileChanges, fileFirstAuthor, numberOfCommits, numberOfFiles: Files_Set.size };
 }
 
 // Function to compute DOA for each file
