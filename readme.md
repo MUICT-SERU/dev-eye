@@ -3,6 +3,8 @@
 
 DEV-EYE is a tool  that computes and visualizes the [bus factor](https://en.wikipedia.org/wiki/Bus_factor) of a repository.
 
+Demo can be found <a href="https://youtu.be/5JvSoUYORfc">HERE</a>.
+
 
 ## [Get started](#get-started)
 
