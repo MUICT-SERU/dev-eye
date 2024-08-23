@@ -80,8 +80,8 @@ async function startServer() {
           })
           .on("error", (err) => {
             if (err.code === "EADDRINUSE") {
-              console.error(`Port ${port} is already in use, trying port ${port + 1}`);
-              startServer(port + 1); // Try the next port
+              console.error(`Port ${port} is already in use`);
+              // startServer(port + 1); // Try the next port
             } else {
               console.error(err);
               process.exit(1);

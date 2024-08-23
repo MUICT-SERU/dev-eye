@@ -2,7 +2,7 @@ import fs, { write } from "fs";
 
 function processFileNames(file) {
   // Extract the old part and new part using regular expression
-  const matches = file.match(/{(.*?) => (.*?)}/);
+  const matches = file?.match(/{(.*?) => (.*?)}/);
 
   if (matches) {
     const oldPart = matches[1].trim();
@@ -21,7 +21,7 @@ function processFileNames(file) {
     };
   } else {
     // No match found, return the file name as is
-    if (file.includes(" => ")) {
+    if (file?.includes(" => ")) {
       const parts = file.split(" => ");
 
       const oldFileName = parts[0]?.trim();
@@ -86,6 +86,8 @@ export function parseGitLog(log_file) {
   let maxYear = -Infinity;
   let numberOfCommits = 0;
   let emailToNameMap = {};
+  let fileRenames = {};
+  const Files_Set = new Set();
 
   // Parse and group by year, also find min and max years
   commits?.forEach((commit) => {
@@ -105,8 +107,18 @@ export function parseGitLog(log_file) {
 
     const files = fileLines.map((fileLine) => {
       const [additions, deletions, fileName] = fileLine.split("\t");
+      
+
+      const { newFileName, oldFileName } = processFileNames(fileName);
+
+      // Update the mapping for the old file name to the new file name
+      if (oldFileName != newFileName) {
+        fileRenames[oldFileName] = newFileName;
+      }
+      const filePath = fileRenames[oldFileName] || oldFileName;
+      Files_Set.add(filePath);
       return {
-        fileName,
+        fileName: filePath,
         additions: parseInt(additions, 10),
         deletions: parseInt(deletions, 10),
       };
@@ -146,8 +158,7 @@ export function parseGitLog(log_file) {
       }
     }
   });
-
-  return { groupedData: generateGroupedData(specificRanges), numberOfCommits };
+  return { groupedData: generateGroupedData(specificRanges), numberOfCommits,numberOfFiles: Files_Set.size };
 }
 
 export function parseGitLog_old(log_file) {
@@ -160,7 +171,7 @@ export function parseGitLog_old(log_file) {
   let currentDate = null;
   let fileRenames = {};
 
-  const Files_Set = new Set();
+ 
 
   let numberOfCommits = 0;
 
@@ -209,8 +220,9 @@ export function parseGitLog_old(log_file) {
       }
     }
   });
+  
 
-  return { authorFileChanges, fileFirstAuthor, numberOfCommits, numberOfFiles: Files_Set.size };
+  return { authorFileChanges, fileFirstAuthor, numberOfCommits };
 }
 
 // Function to compute DOA for each file
