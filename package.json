@@ -1,6 +1,6 @@
 {
   "name": "dev-eye",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "a command-line  and a web-based visualization tool that computes and visualizes the bus factor of a repository",
   "author": "khazifire",
   "license": "ISC",
