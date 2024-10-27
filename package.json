@@ -23,7 +23,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-cli": "tsup  ./src/index.js",
     "format": "prettier --write ./src",
-    "release": "npm run build && npm version patch && npm publish"
+    "release": "npm run build && npm version patch && npm run prepack &&  npm publish",
+    "prepack": "rm -rf .next/cache"
   },
   "type": "module",
   "keywords": [],
