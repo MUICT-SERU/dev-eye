@@ -107,7 +107,6 @@ export function parseGitLog(log_file) {
 
     const files = fileLines.map((fileLine) => {
       const [additions, deletions, fileName] = fileLine.split("\t");
-      
 
       const { newFileName, oldFileName } = processFileNames(fileName);
 
@@ -158,7 +157,7 @@ export function parseGitLog(log_file) {
       }
     }
   });
-  return { groupedData: generateGroupedData(specificRanges), numberOfCommits,numberOfFiles: Files_Set.size };
+  return { groupedData: generateGroupedData(specificRanges), numberOfCommits, numberOfFiles: Files_Set.size };
 }
 
 export function parseGitLog_old(log_file) {
@@ -170,8 +169,6 @@ export function parseGitLog_old(log_file) {
   let currentAuthor = null;
   let currentDate = null;
   let fileRenames = {};
-
- 
 
   let numberOfCommits = 0;
 
@@ -220,7 +217,6 @@ export function parseGitLog_old(log_file) {
       }
     }
   });
-  
 
   return { authorFileChanges, fileFirstAuthor, numberOfCommits };
 }
