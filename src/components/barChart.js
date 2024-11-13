@@ -83,16 +83,14 @@ export default function BarChartComponent({ tf, years }) {
 
   console.log(tf?.[years[years.length - 1]]?.truckFactor.length);
 
-  const chartData = Object.keys(tf || {})
-    ?.reverse()
-    ?.map((year) => {
-      return {
-        date: year,
-        [year]: tf?.[year]?.truckFactor.length,
-        tf_list: tf?.[year]?.truckFactor,
-        [`${year} future`]: tf?.[year]?.future_tf.length,
-      };
-    });
+  const chartData = Object.keys(tf || {})?.map((year) => {
+    return {
+      date: year,
+      [year]: tf?.[year]?.truckFactor.length,
+      tf_list: tf?.[year]?.truckFactor,
+      [`${year} future`]: tf?.[year]?.future_tf.length,
+    };
+  });
 
   return (
     <>

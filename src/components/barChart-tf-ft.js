@@ -7,7 +7,7 @@ export default function BarChartFutureCurrent({ tf, years }) {
   const [value, setValue] = useState(null);
 
   const chartData = Object.keys(tf || {})
-    ?.reverse()
+    // ?.reverse()
     ?.map((year) => {
       return {
         date: year,
