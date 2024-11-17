@@ -77,7 +77,7 @@ function generateGroupedData(logData) {
 }
 
 //TODO: add the function to group commits by year
-export function parseGitLog(log_file) {
+export function parseGitLog(log_file, excluded_files = []) {
   const gitLogData = fs.readFileSync(log_file, "utf-8");
   // const commits = gitLogData.split('\n');
   const commits = gitLogData.trim().split("\n\n");
@@ -105,23 +105,51 @@ export function parseGitLog(log_file) {
       emailToNameMap[email] = author;
     }
 
-    const files = fileLines.map((fileLine) => {
+    // const files = fileLines.map((fileLine) => {
+    //   const [additions, deletions, fileName] = fileLine.split("\t");
+
+    //   const { newFileName, oldFileName } = processFileNames(fileName);
+
+    //   // Update the mapping for the old file name to the new file name
+    //   if (oldFileName != newFileName) {
+    //     fileRenames[oldFileName] = newFileName;
+    //   }
+    //   const filePath = fileRenames[oldFileName] || oldFileName;
+    //   Files_Set.add(filePath);
+    //   return {
+    //     fileName: filePath,
+    //     additions: parseInt(additions, 10),
+    //     deletions: parseInt(deletions, 10),
+    //   };
+    // })
+
+    const files = fileLines.reduce((acc, fileLine) => {
       const [additions, deletions, fileName] = fileLine.split("\t");
 
       const { newFileName, oldFileName } = processFileNames(fileName);
 
+      // Skip if file is in the excluded list
+      if (excluded_files?.includes(newFileName) || excluded_files?.includes(oldFileName)) {
+        return acc;
+      }
+
       // Update the mapping for the old file name to the new file name
-      if (oldFileName != newFileName) {
+      if (oldFileName !== newFileName) {
         fileRenames[oldFileName] = newFileName;
       }
+
       const filePath = fileRenames[oldFileName] || oldFileName;
       Files_Set.add(filePath);
-      return {
+
+      // Add the file info to the accumulator array
+      acc.push({
         fileName: filePath,
         additions: parseInt(additions, 10),
         deletions: parseInt(deletions, 10),
-      };
-    });
+      });
+
+      return acc;
+    }, []);
 
     const commitObject = {
       author: emailToNameMap[email],

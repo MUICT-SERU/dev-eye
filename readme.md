@@ -39,13 +39,15 @@ To customize DEV-EYE's behavior, you can include a *dev-eye.json* file in your p
 
 - *Ownership Percentage Rate:* a threshold for file ownership percentage, determining when a developer is considered a bus factor. the default is 50%. A developer with at least 50% ownership of files is considered a bus factor.
 
+- *Excluded files:* a list of files paths to be excluded in the analysis. e.g ['src/styles/globals.css']
+
 ```json
 //dev-eye.json
 {
   "timeRange": 4,
-  "_comment1": "",
   "ownershipPercentage": 0.5,
   "ownershipPercentage_future_bf": 0.2,
+  "excluded_files":[]
 }
 ```
 

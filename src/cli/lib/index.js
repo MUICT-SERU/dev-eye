@@ -166,7 +166,7 @@ const mainFunction = async (config) => {
 
       console.log(chalk.green("3. Parsing commit details from log file"));
       // const { authorFileChanges, fileFirstAuthor, numberOfCommits } = parseGitLog(log_file)
-      const { groupedData, numberOfCommits, numberOfFiles } = parseGitLog(log_file);
+      const { groupedData, numberOfCommits, numberOfFiles } = parseGitLog(log_file, config?.excluded_files);
       const meta = await get_metadata(repoPath, numberOfCommits, numberOfFiles, startDate);
 
       let _normalizedAuthors_grouped = {};
@@ -182,7 +182,13 @@ const mainFunction = async (config) => {
         _normalizedAuthors_grouped[key] = normalizedAuthors;
         const sortedTopAuthors = getTopAuthors(fileDOA);
         _sortedTopAuthors_grouped[key] = sortedTopAuthors;
-        const truckFactor = calculateTruckFactorUsingNormalizedDOA(normalizedAuthors, totalFiles, sortedTopAuthors, config.ownershipPercentage);
+        const truckFactor = calculateTruckFactorUsingNormalizedDOA(
+          normalizedAuthors,
+          totalFiles,
+          sortedTopAuthors,
+          config?.ownershipPercentage,
+          config?.ownershipPercentage_future_bf
+        );
         _truckFactor_grouped[key] = truckFactor;
       });
 

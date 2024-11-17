@@ -20,12 +20,14 @@ const hostname = "localhost";
 const port = 3000;
 
 const defaultConfig = {
-  timeRange: 4,
   _comment1: "Time Range is the time period for analysis. e.g the default is 4 which means the analysis is for the last 4 years",
-  ownershipPercentage: 0.5,
+  timeRange: 4,
   _comment2: "a threshold for file ownership percentage, determining when a developer is considered a bus factor ",
-  ownershipPercentage_future_bf: 0.2,
+  ownershipPercentage: 0.5,
   _comment3: "a threshold for file ownership percentage, determining when a developer is considered a future bus factor ",
+  ownershipPercentage_future_bf: 0.2,
+  _comment4: "add the full path of the files you want to exclude from the analysis, e.g ['src/filename.js', 'filename.js', 'src/components/filename.js']",
+  excluded_files: [],
 };
 
 async function startServer() {
@@ -33,7 +35,7 @@ async function startServer() {
     // Wait for mainFunction to complete
     // await kill(port);
 
-    console.log(chalk.blue.bold("\nDev-Eye v0.0.1 - CLI"));
+    console.log(chalk.blue.bold("\nDev-Eye v1 - CLI"));
 
     // Check if the file exists
     if (!fs.existsSync("dev-eye.json")) {
@@ -47,6 +49,7 @@ async function startServer() {
     console.log(chalk.green(`   - Time Range for analysis: ${config.timeRange} years`));
     console.log(chalk.green(`   - Ownership Percentage for Bus Factors: ${config.ownershipPercentage * 100}%`));
     console.log(chalk.green(`   - Ownership Percentage for Future Bus Factors: ${(config.ownershipPercentage_future_bf || 0.2) * 100}% \n`));
+    console.log(chalk.green(`   - Excluded Files: ${config.excluded_files} \n`));
 
     const { log_file, tf_file, nor_Authors_file, topAuthors_file, meta_data_file } = await mainFunction(config);
     // console.log(chalk.blue("7. Generating Dev-Eye Report..."));
